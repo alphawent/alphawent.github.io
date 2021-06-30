@@ -19,4 +19,69 @@
 尚亨于野 无吝于宗 树我邦国 天下来同</div>
 ]]></content>
   </entry>
+  <entry>
+    <title>滑模控制学习笔记 - P1</title>
+    <url>/2021/06/23/sliding-control-1/</url>
+    <content><![CDATA[<h1 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h1><p>设系统为单输入系统，状态变量为$\mathbf{x} = [x_1, x_2, \cdots, x_{n}]^\top$，状态方程为</p>
+<p>$$<br>\begin{aligned}<br>x_1’ &amp;= x_2 \\<br>x_2’ &amp;= x_3 \\<br>&amp;\vdots \\<br>x_{n}’ &amp;= f(\mathbf{x})+b(\mathbf{x})u \\<br>\end{aligned}<br>$$<br>$$<br>y = x_1 \quad \quad \quad \quad<br>$$</p>
+<p>其中$f(\mathbf{x}), b(\mathbf{x})$存在一定的不确定性<small>（本文暂不考虑）</small>。<br>寻找控制率$u$，使状态$\mathbf{x}$跟踪时变目标$\mathbf{x_d} \triangleq \left[y_d \ , \ y_d^{(1)}\ ,\ \cdots \ ,\ y_d^{(n-1)}\right]^\top$</p>
+<span id="more"></span>
+
+<h1 id="问题等效"><a href="#问题等效" class="headerlink" title="问题等效"></a>问题等效</h1><p>记$\tilde{y} = y-y_d$，<br>定义<strong>跟踪误差</strong>为：<br>$$<br>\tilde{\mathbf{x}} \triangleq \mathbf{x} - \mathbf{x}_d<br>= \left[\tilde{y} \ , \ \tilde{y}^{(1)}\ ,\ \cdots \ ,\ \tilde{y}^{(n-1)}\right]^\top<br>$$<br>在状态空间$\mathbb{R}^{n}$中定义时变的曲面$S(t): s(\mathbf{x}, t)=0$（即滑模面），其中<br>$$<br>s(\mathbf{x}, t) \triangleq \left(\frac{d}{dt} + \lambda \right)^{n-1} \tilde{y}, \quad \lambda&gt;0<br>$$<br>则：</p>
+<ol>
+<li>$\tilde{\mathbf{x}} \equiv 0$等价于$s \equiv 0$，$\mathbf{x}$跟踪$\mathbf{x}_d$转化为控制$s$跟踪$0$。</li>
+<li>假设跟踪目标满足$\mathbf{x}_d(0) = \mathbf{x}(0)$，则$s$的界限可转化为$\tilde{\mathbf{x}}$有界：<br>$$<br>\forall t \ge 0 \ , \  |s(t)| \le \Phi<br>\quad  \Longrightarrow \quad<br>\forall t \ge 0 \ , \  |\tilde{y}^{(i)}| \le (2\lambda)^i \varepsilon \ , \ i=0, \cdots n-1<br>$$<br>其中$\varepsilon \triangleq \Phi / \lambda^{n-1}$。$s$与$\tilde{y}$的关系如下图所示，$s$与$\tilde{y}^{(i)}$同理；计算略。<img src="/2021/06/23/sliding-control-1/calculate_tracking_error.svg" width="70%" alt="计算跟踪误差"></li>
+</ol>
+<p>至此，状态$\mathbf{x} \rightarrow \mathbf{x}_d$的跟踪问题被转化成标量$s \rightarrow 0$的稳定性问题，并且标量$s$反映了跟踪精度。</p>
+<h1 id="控制率设计"><a href="#控制率设计" class="headerlink" title="控制率设计"></a>控制率设计</h1><p>$s^2$反映了当前状态$\mathbf{x}$距离滑模面$S(t)$的距离，若<br>$$<br>\frac{1}{2} \frac{d}{dt} s^2 \le -\eta |s| \ , \ \eta &gt; 0 \ , \text{constant}<br>$$<br>则“距离”将在有限时间内收敛于0：<br>$$<br>t_\text{reach} \le \frac{|s(0)|}{\eta}<br>$$<br>一旦状态落入滑模面$S(t)$，状态$\mathbf{x}$将按照$S(t)$指定的轨迹$s(\textbf{x}, t) = 0$运行，跟踪误差$\tilde{\textbf{x}}$指数收敛。</p>
+<h2 id="常见的滑模条件"><a href="#常见的滑模条件" class="headerlink" title="常见的滑模条件"></a>常见的滑模条件</h2><ol>
+<li><p>$$\dot{s} = -\eta \mathbf{sgn}(s) \  , \  \eta &gt; 0$$</p>
+</li>
+<li><p>$$\dot{s} = -\eta \mathbf{sgn} (s) - ks \  , \  \eta,k&gt;0$$</p>
+</li>
+<li><p>$$\dot{s} = -k |s|^\alpha \mathbf{sgn}(s) \ , \ 0 &lt; \alpha &lt;1$$</p>
+</li>
+</ol>
+<p>以上趋近率均能够使$s$在<strong>有限时间</strong>内落入滑模面。</p>
+<h1 id="仿真实验"><a href="#仿真实验" class="headerlink" title="仿真实验"></a>仿真实验</h1><p>状态$\mathbf{x}$跟踪$\mathbf{x}_d$<br><img src="/2021/06/23/sliding-control-1/Phase_trajectory_of_sliding_control.gif"></p>
+<p>误差$\tilde{\mathbf{x}}$：进入滑模面，随后<small>(指数)</small>收敛于0。<br><img src="/2021/06/23/sliding-control-1/Phase_trajectory_of_tracking_error.gif"></p>
+]]></content>
+  </entry>
+  <entry>
+    <title>滑模控制学习笔记 - P2</title>
+    <url>/2021/06/25/sliding-control-2/</url>
+    <content><![CDATA[<!-- # 问题描述
+由于模型不精确、存在干扰，状态进入滑模面之后会在滑模面两侧频繁振荡，造成两个控制率连续切换的现象。然而实际控制器并不能做到理论上的连续切换；而且，高速的切换会产生高频动态，给系统带来未知风险。 -->
+<!-- 在滑模面上的控制率，如何近似为有限的切换？ -->
+<!-- 问题： <mark>待补充</mark> -->
+
+<h1 id="知识点补充"><a href="#知识点补充" class="headerlink" title="知识点补充"></a>知识点补充</h1><p>实际上，状态在滑模面上的运动过程是来回切换的。如何理解这个过程？</p>
+<h2 id="Filippov-动态等值"><a href="#Filippov-动态等值" class="headerlink" title="Filippov 动态等值"></a>Filippov 动态等值</h2><p>记$s&gt;0,s&lt;0$区域内的控制率分别为$u_+, u_-$，<br>设驻留时间占比分别为$\alpha, 1-\alpha$。<br>根据<strong>切换系统</strong>的相关定理(*)，等效控制率为</p>
+<p>\begin{equation}\label{combination}<br>u = \alpha u_+ + (1-\alpha) u_-<br>\end{equation}</p>
+<!-- $$
+\begin{aligned}
+\phi_{t} = \gamma_{\lambda_1 t}^{f} \circ \gamma_{\lambda_{2} t}^{g} , \quad 
+\alpha_{k}(t) = \phi_{t / k} \circ \cdots \circ \phi_{t / k}(p), \quad k \text { -times } 
+\quad \Longrightarrow \quad
+\alpha_{k}(t) \longrightarrow \gamma_{t}^{\lambda_{1} f+\lambda_{2} g}(p)
+\end{aligned} $$
+-->
+<img src="/2021/06/25/sliding-control-2/zigzag_equivalence.png" width="40%" alt="切换系统性质：时间比例=向量场比例">
+
+<p>为了使状态落入滑模面($s=0$)之后不再逃离($s \equiv 0$)，所施加的控制应该满足</p>
+<p>\begin{equation}\label{Identically_equal_to_0}<br>\dot{s} = 0<br>\end{equation}</p>
+<p>根据式\eqref{combination},\eqref{Identically_equal_to_0}可解得时间占比$\alpha ,\ 1-\alpha$。</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>滑模控制学习笔记 - P3</title>
+    <url>/2021/06/26/sliding-control-3/</url>
+    <content><![CDATA[<h1 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h1><p>实际系统中的非线性环节往往并不能准确得知，滑模控制器能否达到理想的控制结果？</p>
+<h1 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h1><p>以一个简单的二阶系统为例：<br>$$<br>x’’ = f(\mathbf{x}) + u<br>$$<br>其中$f(\mathbf{x})$的估计为$\hat{f}(\mathbf{x})$，满足<br>$$<br>|\hat{f}(\mathbf{x}) - f(\mathbf{x})| \le F(\mathbf{x})<br>$$</p>
+<span id="more"></span>
+
+<p>根据之前的设计(令$\dfrac{1}{2}\dfrac{d}{dt}s^2 = -\eta |s|$)：<br>$$<br>\dot{s} = f+u-y_d^{(2)} + \lambda \tilde{y}^{(1)} = -\eta \mathbf{sgn}(s)<br>$$<br>$f$使用现有的近似值$\hat{f}$替换，则现有条件下设计的控制器满足：<br>$$<br>\dot{s} = \hat{f}+u-y_d^{(2)} + \lambda \tilde{y}^{(1)} = f - \hat{f} -\eta \mathbf{sgn}(s)<br>$$<br>则状态与滑模面间的“距离”满足：<br>$$<br>\dfrac{1}{2}\dfrac{d}{dt}s^2 = s \dot{s} = (f - \hat{f})s -\eta \mathbf |s|<br>$$<br>若$\eta$满足：<br>$$<br>\eta &gt; F(x)<br>$$<br>则<br>$$<br>\dfrac{1}{2}\dfrac{d}{dt}s^2 &lt; 0<br>$$<br>因此，当参数$\eta$足够大时，状态能完美地收敛于滑模面。</p>
+<h1 id="另一种方法：积分控制"><a href="#另一种方法：积分控制" class="headerlink" title="另一种方法：积分控制"></a>另一种方法：积分控制</h1><p>将“受扰动的控制结果仍然准确”转换为“误差的积分恒为0”，即希望<br>$$<br>\int_{0}^t \tilde{y} (r) dr \longrightarrow 0<br>$$<br>考虑此变量，则系统为3阶，使用滑模控制：<br>$$<br>s = \left( \frac{d}{dt} + \lambda \right)^2 \int_0^t \tilde{y}(r) dr<br>$$<br>采用$f$的近似$\hat{f}$，则控制器为：<br>$$<br>u = -\hat{f} + y_d^{(2)} - 2\lambda \tilde{y}^{(1)} - \lambda^2 \tilde{y} - \eta \mathbf{sgn} (s)<br>$$</p>
+]]></content>
+  </entry>
 </search>
